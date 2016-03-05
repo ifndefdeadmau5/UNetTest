@@ -21,7 +21,7 @@ public class MyNetworkDiscovery : NetworkDiscovery {
 
         //destString = destString.Substring(6);
         //Debug.Log("recived broadcast from : " + destString);
-        Debug.Log(hostId);
+        Debug.Log(fromAddress);
         netManager.ConnectToServer(fromAddress);
         StopBroadcast( );
         TweenLabel.text = "Server Connected..Send UID";

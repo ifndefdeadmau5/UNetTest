@@ -8,6 +8,7 @@ TagManager:
   - NetworkManager
   - Drag and Drop Root
   - SendLabel
+  - ConnectedLabel
   layers:
   - Default
   - TransparentFX

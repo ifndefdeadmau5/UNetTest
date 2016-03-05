@@ -9,35 +9,42 @@ public class MyNetManager : NetworkManager
 	NetworkClient myClient;
 	public NetworkDiscovery discovery;
 	public string Address;
-	/* 안드로이드 기기 버튼 처리(홈, 뒤로가기, ... )
-    void Update()
-    {
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            if (Input.GetKey(KeyCode.Home))
-            {
-                //home button
-            }
-            else if (Input.GetKey(KeyCode.Escape))
-            {
-                //back button
-                //Play
-            }
-            else if (Input.GetKey(KeyCode.Menu))
-            {
-                //menu button
-            }
-        }
-
-    }*/
+    public UILabel ConnectedLabel;
+	
 	void Start ()
 	{
 		//SceneManager.LoadScene("stage03");
 		SetupClient ();
-	}
+        ConnectedLabel = GameObject.FindGameObjectWithTag("ConnectedLabel").GetComponent<UILabel>();
+        Address = "empty";
+    }
 
-	/* 메시지 전송 관련 */
-	public class ScoreMessage : MessageBase
+    void Update()
+    {
+
+        if (myClient.isConnected)
+        {
+            ConnectedLabel.text = "online";
+            StopCoroutine("recoveryConnection");
+        }
+        else
+        {
+            if (Address != "empty") { 
+            StartCoroutine("recoveryConnection", 0.5f);
+            }
+            ConnectedLabel.text = "offline";
+        }
+    }
+
+    IEnumerator recoveryConnection(float delayTime)
+    {
+        Debug.Log("Time : " + Time.time);
+        yield return new WaitForSeconds(delayTime);
+        StartCoroutine("recoveryConnection");
+    }
+
+    /* 메시지 전송 관련 */
+    public class ScoreMessage : MessageBase
 	{
 		public int completeNumber;
 	}
@@ -80,8 +87,6 @@ public class MyNetManager : NetworkManager
 		ScoreMessage msg = new ScoreMessage ();
 		msg.completeNumber = score;
 
-        //NetworkServer.SendToAll(MyMsgType.CompleteNumber, msg);
-
         sendResult = myClient.Send (MyMsgType.CompleteNumber, msg);
 
         return sendResult;
@@ -106,7 +111,7 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
 		  
-		myClient.Connect (Address, 4444);
+		
 		//Debug.Log("OnClientDisconnect( )");
 		//Debug.Log(conn.connectionId);
 		//discovery.showGUI = true;
@@ -137,15 +142,17 @@ public class MyNetManager : NetworkManager
 		discovery.Initialize ();
 		discovery.StartAsClient ();
 
-		myClient.RegisterHandler (MsgType.Connect, OnConnected);
-		myClient.RegisterHandler (MyMsgType.Number, OnStartSignal);
-
+		myClient.RegisterHandler (MsgType.Connect, OnConnected);		
 		myClient.RegisterHandler (MsgType.Disconnect, OnDisconnected);
-	}
+        myClient.RegisterHandler(MyMsgType.Number, OnStartSignal);
+    }
 
 	public void ConnectToServer (string address)
 	{
 		Address = address;
 		myClient.Connect (address, 4444);
 	}
+
+  
+   
 }
