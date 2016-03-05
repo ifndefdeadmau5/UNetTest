@@ -84,19 +84,22 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Connected :" + netMsg.conn.address);
 		SendUID ();
+        ConnectedLabel.text = "Connected ^.^";
+        
         //StopCoroutine("recoveryConnection");
     }
 
-	public void OnDisconnected (NetworkMessage netMsg)
+    public void OnDisconnected (NetworkMessage netMsg)
 	{  
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
+        ConnectedLabel.text = "Disconnected T.T";
         //StartCoroutine("recoveryConnection", 0.5f);
-    
 
-    //Debug.Log("OnClientDisconnect( )");
-    //Debug.Log(conn.connectionId);
-    //discovery.showGUI = true;
-}
+
+        //Debug.Log("OnClientDisconnect( )");
+        //Debug.Log(conn.connectionId);
+        //discovery.showGUI = true;
+    }
 	  
 
 
@@ -113,9 +116,17 @@ public class MyNetManager : NetworkManager
 		discovery.showGUI = true;
 	}
 
-	/* 사용자 정의 함수 */
+    public override void OnStopHost()
+    {
+        discovery.StopBroadcast();
+        NetworkTransport.RemoveHost(0);
 
-	public void SetupClient ()
+        discovery.StartAsClient();
+
+    }
+    /* 사용자 정의 함수 */
+
+    public void SetupClient ()
 	{
 		Debug.Log ("SetupClient()");
 		myClient = new NetworkClient ();

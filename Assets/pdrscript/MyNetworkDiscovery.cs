@@ -24,7 +24,10 @@ public class MyNetworkDiscovery : NetworkDiscovery {
             Debug.Log("연결중이 아니므로 접속합니다");
             TweenLabel.text = "Connect to server...";
         }
-        
+        else
+        {
+            TweenLabel.text = "Now Connected";
+        }      
         
     }
 }
