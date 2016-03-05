@@ -120,7 +120,7 @@ public class MyNetManager : NetworkManager
     {
         discovery.StopBroadcast();
         NetworkTransport.RemoveHost(0);
-
+        Debug.Log("호스트 제거");
         discovery.StartAsClient();
 
     }
