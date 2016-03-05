@@ -10,20 +10,21 @@ public class MyNetworkDiscovery : NetworkDiscovery {
     {
         netManager = GameObject.FindWithTag("NetworkManager").GetComponent<MyNetManager>( );
         TweenLabel = GameObject.FindWithTag("TweenLabel").GetComponent<UILabel>();
+        Initialize();
     }
     public override void OnReceivedBroadcast(string fromAddress, string data)
     {
         //서버로부터 브로드캐스트 메시지를 받았을 때 실행됩니다.
         base.OnReceivedBroadcast(fromAddress, data);
 
-        //string destString = fromAddress;
-
-
-        //destString = destString.Substring(6);
-        //Debug.Log("recived broadcast from : " + destString);
         Debug.Log(fromAddress);
-        netManager.ConnectToServer(fromAddress);
-        StopBroadcast( );
-        TweenLabel.text = "Server Connected..Send UID";
+        if ( !netManager.isConnected() )
+        {
+            netManager.ConnectToServer(fromAddress);
+            Debug.Log("연결중이 아니므로 접속합니다");
+            TweenLabel.text = "Connect to server...";
+        }
+        
+        
     }
 }

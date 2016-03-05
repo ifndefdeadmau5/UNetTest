@@ -13,34 +13,13 @@ public class MyNetManager : NetworkManager
 	
 	void Start ()
 	{
-		//SceneManager.LoadScene("stage03");
 		SetupClient ();
-        ConnectedLabel = GameObject.FindGameObjectWithTag("ConnectedLabel").GetComponent<UILabel>();
         Address = "empty";
     }
 
-    void Update()
+    public bool isConnected()
     {
-
-        if (myClient.isConnected)
-        {
-            ConnectedLabel.text = "online";
-            StopCoroutine("recoveryConnection");
-        }
-        else
-        {
-            if (Address != "empty") { 
-            StartCoroutine("recoveryConnection", 0.5f);
-            }
-            ConnectedLabel.text = "offline";
-        }
-    }
-
-    IEnumerator recoveryConnection(float delayTime)
-    {
-        Debug.Log("Time : " + Time.time);
-        yield return new WaitForSeconds(delayTime);
-        StartCoroutine("recoveryConnection");
+        return myClient.isConnected;
     }
 
     /* 메시지 전송 관련 */
@@ -105,17 +84,19 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Connected :" + netMsg.conn.address);
 		SendUID ();
-	}
+        //StopCoroutine("recoveryConnection");
+    }
 
 	public void OnDisconnected (NetworkMessage netMsg)
 	{  
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
-		  
-		
-		//Debug.Log("OnClientDisconnect( )");
-		//Debug.Log(conn.connectionId);
-		//discovery.showGUI = true;
-	}
+        //StartCoroutine("recoveryConnection", 0.5f);
+    
+
+    //Debug.Log("OnClientDisconnect( )");
+    //Debug.Log(conn.connectionId);
+    //discovery.showGUI = true;
+}
 	  
 
 
@@ -149,7 +130,8 @@ public class MyNetManager : NetworkManager
 
 	public void ConnectToServer (string address)
 	{
-		Address = address;
+        if (Address == "empty") { Address = address; }
+		
 		myClient.Connect (address, 4444);
 	}
 
