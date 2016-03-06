@@ -18,6 +18,7 @@ public class MyNetworkDiscovery : NetworkDiscovery {
         base.OnReceivedBroadcast(fromAddress, data);
 
         Debug.Log(fromAddress);
+
         if ( !netManager.isConnected() )
         {
             netManager.ConnectToServer(fromAddress);
@@ -27,6 +28,7 @@ public class MyNetworkDiscovery : NetworkDiscovery {
         else
         {
             TweenLabel.text = "Now Connected";
+
         }      
         
     }

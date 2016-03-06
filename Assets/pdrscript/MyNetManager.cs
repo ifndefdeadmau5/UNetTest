@@ -11,9 +11,11 @@ public class MyNetManager : NetworkManager
 	public string Address;
     public UILabel ConnectedLabel;
     public string uid;
+	bool first;
 
 	void Start ()
 	{
+		first = true;
 		SetupClient ();
         Address = "empty";
         uid = SystemInfo.deviceUniqueIdentifier.Substring(10);
@@ -91,7 +93,8 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Connected :" + netMsg.conn.address);
 		SendUID ();
-        ConnectedLabel.text = "Connected ^.^";  
+        ConnectedLabel.text = "Connected ^.^";
+		Debug.Log (myClient.GetRTT ());
     }
 
     public void OnDisconnected (NetworkMessage netMsg)
@@ -99,10 +102,14 @@ public class MyNetManager : NetworkManager
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
         ConnectedLabel.text = "Disconnected T.T";
 
+
+		Debug.Log("호스트 제거" + netMsg.conn.hostId);
+
+		NetworkTransport.RemoveHost (netMsg.conn.hostId);
         // 브로드캐스팅 실행 중이 아니면 ( 검사 진행 중이라면 )
         if( !discovery.running)
         {
-            myClient.Connect(Address, 4444);
+			myClient.ReconnectToNewHost (Address, 4444);
         }
     }
 	  
@@ -124,8 +131,7 @@ public class MyNetManager : NetworkManager
     public override void OnStopHost()
     {
         discovery.StopBroadcast();
-        NetworkTransport.RemoveHost(0);
-        Debug.Log("호스트 제거");
+       
         discovery.StartAsClient();
 
     }
@@ -147,8 +153,16 @@ public class MyNetManager : NetworkManager
 	public void ConnectToServer (string address)
 	{
         if (Address == "empty") { Address = address; }
+
+		if (first) {
+			myClient.Connect (address, 4444);
+			first = false;
+		} else {
+			
+			//NetworkTransport.RemoveHost (1);
+			myClient.ReconnectToNewHost (address, 4444);
+		}
 		
-		myClient.Connect (address, 4444);
 	}
 
   
