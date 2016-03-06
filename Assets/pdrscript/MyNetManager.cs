@@ -10,11 +10,13 @@ public class MyNetManager : NetworkManager
 	public NetworkDiscovery discovery;
 	public string Address;
     public UILabel ConnectedLabel;
-	
+    public string uid;
+
 	void Start ()
 	{
 		SetupClient ();
         Address = "empty";
+        uid = SystemInfo.deviceUniqueIdentifier.Substring(10);
     }
 
     public bool isConnected()
@@ -26,6 +28,7 @@ public class MyNetManager : NetworkManager
     public class ScoreMessage : MessageBase
 	{
 		public int completeNumber;
+        public string uid;
 	}
 
 	public class StartMessage : MessageBase
@@ -51,9 +54,10 @@ public class MyNetManager : NetworkManager
 	public void SendUID ( )
 	{
 		UidMessage msg = new UidMessage ();
-		msg.uid = SystemInfo.deviceUniqueIdentifier;
-		  
-		myClient.Send (MyMsgType.UID, msg);
+        msg.uid = uid;
+
+
+        myClient.Send (MyMsgType.UID, msg);
 	}
 
     // Returns:
@@ -65,6 +69,8 @@ public class MyNetManager : NetworkManager
         bool sendResult;
 		ScoreMessage msg = new ScoreMessage ();
 		msg.completeNumber = score;
+        msg.uid = uid;
+
 
         sendResult = myClient.Send (MyMsgType.CompleteNumber, msg);
 
@@ -78,6 +84,7 @@ public class MyNetManager : NetworkManager
 		Debug.Log ("OnStartSignal");
 
 		SceneManager.LoadScene ("NetworkTest");
+        discovery.StopBroadcast();
 	}
 
 	public void OnConnected (NetworkMessage netMsg)
@@ -91,6 +98,12 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
         ConnectedLabel.text = "Disconnected T.T";
+
+        // 브로드캐스팅 실행 중이 아니면 ( 검사 진행 중이라면 )
+        if( !discovery.running)
+        {
+            myClient.Connect(Address, 4444);
+        }
     }
 	  
 
