@@ -22,9 +22,13 @@ public class RestartApplication : MonoBehaviour {
 	
 	}
 
-    void Restart()
+    public void Restart()
     {
+        // host cannot exceed 16 에러가 발생하면
+        // 수동으로 재시작. NetworkManager 파괴 후
+        // 씬을 리로드한다.
         GameObject.Destroy(MyNetManager);
+        SceneManager.UnloadScene("menu");
         SceneManager.LoadScene("menu");
     }
 }
