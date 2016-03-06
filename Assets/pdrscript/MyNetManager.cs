@@ -84,21 +84,13 @@ public class MyNetManager : NetworkManager
 	{  
 		Debug.Log ("Connected :" + netMsg.conn.address);
 		SendUID ();
-        ConnectedLabel.text = "Connected ^.^";
-        
-        //StopCoroutine("recoveryConnection");
+        ConnectedLabel.text = "Connected ^.^";  
     }
 
     public void OnDisconnected (NetworkMessage netMsg)
 	{  
 		Debug.Log ("Disconnected :" + netMsg.conn.address);
         ConnectedLabel.text = "Disconnected T.T";
-        //StartCoroutine("recoveryConnection", 0.5f);
-
-
-        //Debug.Log("OnClientDisconnect( )");
-        //Debug.Log(conn.connectionId);
-        //discovery.showGUI = true;
     }
 	  
 
