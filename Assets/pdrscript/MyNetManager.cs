@@ -105,7 +105,7 @@ public class MyNetManager : NetworkManager
 
 		Debug.Log("호스트 제거" + netMsg.conn.hostId);
 
-		NetworkTransport.RemoveHost (netMsg.conn.hostId);
+		//NetworkTransport.RemoveHost (netMsg.conn.hostId);
         // 브로드캐스팅 실행 중이 아니면 ( 검사 진행 중이라면 )
         if( !discovery.running)
         {
