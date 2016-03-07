@@ -17,10 +17,10 @@ public class SendDataScript : MonoBehaviour {
 
         if ( null != NetManager)
         {
-            Debug.Log("NetManager OK");
+            NGUIDebug.Log("NetManager OK");
         }
         else {
-            Debug.Log("NetManager NOT OK");
+            NGUIDebug.Log("NetManager NOT OK");
         }
 
         result = 0;
@@ -30,7 +30,7 @@ public class SendDataScript : MonoBehaviour {
     public void SendResult( )
     {
         
-        Debug.Log("SendResult");
+        NGUIDebug.Log("Sended " + sendCount + " time");
         
         if( NetManager.SendScore(result) )
         {

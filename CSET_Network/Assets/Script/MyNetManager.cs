@@ -188,6 +188,12 @@ public class MyNetManager : NetworkManager
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnDisconnected);
             NetworkServer.RegisterHandler(MyMsgType.CompleteNumber, OnScore);
             NetworkServer.RegisterHandler(MyMsgType.UID, OnUID);
+            
+             ConnectionConfig config = new ConnectionConfig();
+            config.AddChannel(QosType.ReliableSequenced);
+            config.AddChannel(QosType.Unreliable);
+            NetworkServer.Configure(config, 4444);
+            NetworkServer.Listen(4444);
         }
 
         if( !discovery.running)

@@ -17,12 +17,12 @@ public class MyNetworkDiscovery : NetworkDiscovery {
         //서버로부터 브로드캐스트 메시지를 받았을 때 실행됩니다.
         base.OnReceivedBroadcast(fromAddress, data);
 
-        Debug.Log(fromAddress);
+        NGUIDebug.Log(fromAddress);
 
         if ( !netManager.isConnected() )
         {
             netManager.ConnectToServer(fromAddress);
-            Debug.Log("연결중이 아니므로 접속합니다");
+            NGUIDebug.Log("연결중이 아니므로 접속합니다");
             TweenLabel.text = "Connect to server...";
         }
         else

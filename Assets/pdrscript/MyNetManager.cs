@@ -83,7 +83,7 @@ public class MyNetManager : NetworkManager
 	public void OnStartSignal (NetworkMessage netMsg)
 	{
 		StartMessage msg = netMsg.ReadMessage<StartMessage> ();
-		Debug.Log ("OnStartSignal");
+		NGUIDebug.Log("OnStartSignal");
 
 		SceneManager.LoadScene ("NetworkTest");
         discovery.StopBroadcast();
@@ -91,19 +91,18 @@ public class MyNetManager : NetworkManager
 
 	public void OnConnected (NetworkMessage netMsg)
 	{  
-		Debug.Log ("Connected :" + netMsg.conn.address);
+		NGUIDebug.Log("Connected :" + netMsg.conn.address);
 		SendUID ();
         ConnectedLabel.text = "Connected ^.^";
-		Debug.Log (myClient.GetRTT ());
     }
 
     public void OnDisconnected (NetworkMessage netMsg)
 	{  
-		Debug.Log ("Disconnected :" + netMsg.conn.address);
+        NGUIDebug.Log("Disconnected :" + netMsg.conn.address);
         ConnectedLabel.text = "Disconnected T.T";
 
 
-		Debug.Log("호스트 제거" + netMsg.conn.hostId);
+		NGUIDebug.Log("호스트 제거" + netMsg.conn.hostId);
 
 		//NetworkTransport.RemoveHost (netMsg.conn.hostId);
         // 브로드캐스팅 실행 중이 아니면 ( 검사 진행 중이라면 )
@@ -142,12 +141,20 @@ public class MyNetManager : NetworkManager
 		Debug.Log ("SetupClient()");
 		myClient = new NetworkClient ();
         
+         ConnectionConfig config = new ConnectionConfig();
+        config.AddChannel(QosType.ReliableSequenced);
+         config.AddChannel(QosType.Unreliable);
+        client.Configure(config, 1000);
+        
 		discovery.Initialize ();
 		discovery.StartAsClient ();
 
 		myClient.RegisterHandler (MsgType.Connect, OnConnected);		
 		myClient.RegisterHandler (MsgType.Disconnect, OnDisconnected);
         myClient.RegisterHandler(MyMsgType.Number, OnStartSignal);
+        
+        
+ 
     }
 
 	public void ConnectToServer (string address)
