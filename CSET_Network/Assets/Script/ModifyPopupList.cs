@@ -13,7 +13,7 @@ public class ModifyPopupList : MonoBehaviour {
     // Use this for initialization
     void Start () {
         PlayerManager playerManager = PlayerManager.Instance;
-        Debug.Log("start");
+        
 
         PopupList = gameObject.GetComponent<UIPopupList>();
         Debug.Log(playerManager.childList.Count);
@@ -48,7 +48,7 @@ public class ModifyPopupList : MonoBehaviour {
             if ( (playerManager.childList[i].cm_name == cm_name) && (playerManager.childList[i].m_name == m_name) )
             // childList 내에서 팝업리스트에서 선택한 아동/부모명과 일치하는 데이터를 검색
             {
-                Debug.Log("들어오긴해?");
+ 
                 playerManager.setChildToDevice(cm_name, m_name, connId, playerManager.childList[i].cm_num, playerManager.childList[i].m_num, playerManager.childList[i].oi_num );
             }
         }

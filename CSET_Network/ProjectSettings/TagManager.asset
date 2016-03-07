@@ -11,6 +11,8 @@ TagManager:
   - OrderList
   - server
   - RequestManager
+  - DebugLabel
+  - DebugLabel2
   layers:
   - Default
   - TransparentFX

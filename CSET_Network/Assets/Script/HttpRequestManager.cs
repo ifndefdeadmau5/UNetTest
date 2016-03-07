@@ -5,10 +5,10 @@ using LitJson;
 
 public class HttpRequestManager : MonoBehaviour {
 
-    string login_url = "www.csetest.com/CSET/application/login.php";
-    string child_url = "www.csetest.com/CSET/application/child_member.php";
-    string order_url = "www.csetest.com/CSET/application/order_paper.php";
-    string send_url =  "www.csetest.com/CSET/application/cset_result.php";
+    string login_url = "http://www.csetest.com/CSET/application/login.php";
+    string child_url = "http://www.csetest.com/CSET/application/child_member.php";
+    string order_url = "http://www.csetest.com/CSET/application/order_paper.php";
+    string send_url =  "http://www.csetest.com/CSET/application/cset_result.php";
 
     //1.223.7.2:8600
 //    string login_url = "http://1.223.7.2:8600/CSET/application/login.php";
@@ -19,10 +19,14 @@ public class HttpRequestManager : MonoBehaviour {
     public AcceptClientGridManager OrderListGrid;
     bool isFirst;
     static int pre_op_num = 0; // 이전 아동명 목록 요청번호
-
+    UILabel DebugLabel;
+    UILabel DebugLabel2;
 
     // Use this for initialization
- 
+    void Awake( ){
+        DebugLabel = GameObject.FindGameObjectWithTag("DebugLabel").GetComponent<UILabel>();
+        DebugLabel2 = GameObject.FindGameObjectWithTag("DebugLabel2").GetComponent<UILabel>();
+    }
     public void LoginRequest(string ID, string PW)
     {
         IDictionary<string, string> dic = new Dictionary<string, string> { };
@@ -40,12 +44,14 @@ public class HttpRequestManager : MonoBehaviour {
         if (www.error != null)
         {
             Debug.Log("[Error] " + www.error);
+            DebugLabel2.text = www.error;
         }
         else {
             string destString = www.text;
             string searchText = "{";
             destString = destString.Substring(destString.IndexOf(searchText)); // 상단의 HTML 코드 제거, JSON 데이터부터 시작하도록
 
+            DebugLabel2.text = destString;
             JsonData json = JsonMapper.ToObject(destString);
             JsonData items = json["result"];
 
@@ -77,6 +83,7 @@ public class HttpRequestManager : MonoBehaviour {
         if (www.error != null)
         {
             Debug.Log("[Error] " + www.error);
+            DebugLabel.text = www.error;
         }
         else {
             string destString = www.text;
@@ -89,8 +96,8 @@ public class HttpRequestManager : MonoBehaviour {
             JsonData items = json["result"];
             int count = items.Count;
 
-            Debug.Log("주문서 요청");
-
+            NGUIDebug.Log("주문서 요청");
+           DebugLabel.text = destString;
             for (int i = 0; i < count; i++)
             {
                 //m_name, op_test, op_reserv_num, op_reserv_date
@@ -102,9 +109,11 @@ public class HttpRequestManager : MonoBehaviour {
                 int op_reserv_num = System.Convert.ToInt32(item["op_reserv_num"].ToString());
                 int op_num = System.Convert.ToInt32(item["op_num"].ToString());
 
-                Debug.Log(m_name + " " + op_reserv_num + " " + op_reserv_date + " " + op_address + " " + op_num);
+                NGUIDebug.Log(m_name + " " + op_reserv_num + " " + op_reserv_date + " " + op_address + " " + op_num);
                 OrderListGrid.addOrderItem(op_reserv_date, op_address, op_reserv_num, op_num);
-
+          
+    
+                
                 helper.op_num = op_num;
             }
 
